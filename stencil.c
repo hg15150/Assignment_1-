@@ -50,18 +50,53 @@ int main(int argc, char *argv[]) {
 }
 
 //START HERE
+//const image
 
 //CRITICAL CODE -----------------------------------------------------------------------------------------------------------------------------------
 void stencil(const int nx, const int ny, float * restrict image, float * restrict tmp_image) {
-  for (int j = 0; j < ny; ++j) {
-    for (int i = 0; i < nx; ++i) {
-      tmp_image[j+i*ny] = image[j+i*ny] * 0.6f;
-      if (i > 0)    tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.1f;
-      if (i < nx-1) tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.1f;
-      if (j > 0)    tmp_image[j+i*ny] += image[j-1+i*ny] * 0.1f;
-      if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.1f;
-    }
+  //Top left
+  tmp_image[0] = image[0]*0.6f + (image[nx] + image[1])*0.1f;
+  //Top middle
+  for (int i = 1; i < (nx-1); i++) {
+    tmp_image[i] = image[i]*0.6f + (image[i-1] + image[i+nx] + image[i+1])*0.1f;
   }
+  //Top right
+  tmp_image[nx-1] = image[nx-1]*0.6f + (image[nx-2] + image[(nx-1)+nx])*0.1f;
+
+  //Middle section HERE
+  for (int r = 1; r < ny-1; r++) {
+    //Left
+    tmp_image[nx*r] = image[nx*r]*0.6f + (image[nx*(r-1)] + image[nx*(r+1)] + image[nx*r+1])*0.1f;
+
+    //Middle
+    for (int c = 1; c < nx-1; c++) {
+      tmp_image[c+r*ny] = image[c+r*ny]*0.6f + (image[(c-1)+r*nx] + image[(c+1)+r*nx] + image[c+(r-1)*nx] + image[c+(r+1)*nx])*0.1f;
+    }
+
+    //Right
+    tmp_image[nx*(r+1)-1] = image[nx*(r+1)-1]*0.6f + (image[nx*r-1] + image[nx*(r+1)-2] + image[nx*(r+2)-1])*0.1f;
+  }
+
+  //Bottom left
+  tmp_image[(ny-1)*nx] = image[nx*(ny-1)]*0.6f + (image[nx*(ny-2)] + image[(nx*(ny-1))+1])*0.1f;
+
+  //Bottom middle
+  for (int i = 1; i < (nx-1); i++) {
+    tmp_image[(ny-1)*nx+i] = image[(ny-1)*nx+i]*0.6f + (image[nx*(ny-1)+(i-1)] + image[nx*(ny-1)+(i+1)] + image[(nx)*(ny-2)+i] ) * 0.1f;
+  }
+
+  //Bottom right
+  tmp_image[ny*nx-1] = image[ny*nx-1]*0.6f + (image[ny*nx-2] + image[ny*(nx-1)-1])*0.1f;
+
+  // for (int j = 0; j < ny; ++j) {
+  //   for (int i = 0; i < nx; ++i) {
+  //     tmp_image[j+i*ny] = image[j+i*ny] * 0.6f;
+  //     if (i > 0)    tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.1f;
+  //     if (i < nx-1) tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.1f;
+  //     if (j > 0)    tmp_image[j+i*ny] += image[j-1+i*ny] * 0.1f;
+  //     if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.1f;
+  //   }
+  // }
 }
 
 //CRITICAL CODE -----------------------------------------------------------------------------------------------------------------------------------
