@@ -18,5 +18,9 @@ gcc: stencil.c
 	gcc -std=c99 -Wall -O5 $^ -o $@
 	./stencil 1024 1024 100
 
+3: stencil3.c
+	gcc -std=c99 -Wall -O5 stencil3.c -o stencil3
+	./stencil3 1024 1024 100
+
 check:
 	python check.py --ref-stencil-file stencil_1024_1024_100.pgm --stencil-file stencil.pgm
