@@ -1,6 +1,5 @@
 stencil: stencil.c
-	icc -std=c99 -Wall $^ -o $@#
-	./stencil 1024 1024 100
+	icc -std=c99 -Wall -Ofast -xHOST $^ -o $@#
 
 gpr: stencil.c
 	gcc -std=c99 -pg -fopenmp -g -o stream.gprof stencil.c
@@ -8,7 +7,7 @@ gpr: stencil.c
 	gprof -b -l stream.gprof gmon.out
 
 gcc: stencil.c
-	gcc -std=c99 -Wall -O5 $^ -o $@
+	gcc -std=c99 -Wall $^ -o $@
 	./stencil 1024 1024 100
 
 check:
